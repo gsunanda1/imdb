@@ -36,3 +36,146 @@
     transform: rotate(360deg);
   }
 }
+body *{
+  box-sizing: border-box;
+}
+
+.header{
+  height:80px;
+  width:100%;
+  background-color: #ccc;
+  display:flex;
+  align-items: center;
+}
+.header .link{
+ margin:10px;
+ padding:5px;
+ font-size:25px;
+}
+
+.banner{
+  height:400px;
+  width:100%;
+  background-size:cover;
+  background-image:url('https://image.tmdb.org/t/p/original/yrafAmPQgr5RWEe67BrbHu7jiB.jpg');
+  position:relative;
+}
+.banner .detail{
+  position:absolute;
+  height:200px;
+  bottom:0;
+  width:100%;
+  padding:20px;
+  color:white;
+}
+.movie-list-wrapper{
+  width:100%;
+  height:auto;
+  background-color:antiquewhite;
+  padding:10px 50px;
+}
+.movie-list-wrapper .movie-heading{
+  width:100%;
+  height:50px;
+  text-align:center;
+  font-size:16px;
+  padding:10px;
+  
+}
+.movie-list-wrapper .movie-list{
+  width:100%;
+  height:auto;
+  padding:30px;
+}
+.movie-list-wrapper .movie-list .movie-card{
+  width:300px;
+  height:300px;
+  border:5px solid #ccc;
+  box-shadow:2px 2px 2px rgba(0,0,0,0.1);
+  padding:10px;
+  position:relative;
+  background-size:cover;
+  margin:10px 10px;
+  display:inline-block;
+}
+.movie-list-wrapper .movie-list .movie-card h3{
+  color:white;
+}
+.movie-list-wrapper .movie-list .movie-card button{
+  background-color:blue;
+  margin:auto;
+  color:white;
+  border-radius:5px;
+  position:absolute;
+  bottom:40px;
+  width:140px;
+}
+
+.pagination{
+  display:flex;
+  justify-content:center;
+  margin:15px 0px;
+}
+
+.pagination .selected{
+  background-color:#61dafb;
+}
+.favourites{
+  display:flex;
+  padding:30px;
+}
+.favourites .left-section{
+  width:30%;
+}
+.favourites .left-section li.selected{
+  background-color: #ccc;
+}
+.favourites .right-section{
+  width:70%;
+}
+.favourites .right-section table{
+  border:1px solid #ccc;
+  border-collapse: collapse;
+}
+.favourites .right-section table td{
+  border:1px solid #ccc;
+  padding:10px 10px;
+}
+.favourites .right-section table th{
+  border:1px solid #ccc;
+  padding:10px 10px;
+}
+.favourites .right-section table img{
+  width: 50px;
+}
+.genres-wrapper{
+  display:flex;
+  justify-content:center;
+  
+}
+.genres-wrapper ul{
+  border:1px solid #ccc;
+  border-radius:3px;
+  overflow:hidden;
+  margin:0px;
+  padding:0px;
+}
+.genres-wrapper ul li{
+  border:1px solid #ccc;
+  padding:20px 20px;
+  list-style:none;
+}
+.add-movie{
+  width:400px;
+}
+.add-movie label{
+  display:inline-block;
+  width:100px;
+}
+.add-movie input{
+  width:200px;
+}
+.add-movie .row{
+  padding:10px 15px;
+}
+
