@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { FavouriteContext } from "../context/favourite";
 
 let genreIds = {
     28: "Action",
@@ -21,48 +22,54 @@ let genreIds = {
     10752: "War",
     37: "Western",
 }
-const Favourites = ({ favourites }) => {
-    const [genres,setGenres]=useState([]);
+const Favourites = () => {
+    const {favourites} = useContext(FavouriteContext);
+    //const [genres,setGenres]=useState([]);
     const [favouriteList,setFavouriteList]= useState(favourites);
-    useEffect(()=>{
-        const genreIds = Array.from(new Set(favourites.map((fav)=> fav.genre_ids[0])));
-        setGenres(genreIds);
+    // useEffect(()=>{
+    //     const genreIds = Array.from(new Set(favourites.map((fav)=> fav.genre_ids[0])));
+    //     setGenres(genreIds);
+    // },[favourites]);
+
+   
+    const genres = useMemo(()=>{
+        return Array.from(new Set(favourites.map((fav)=> fav.genre_ids[0])))
     },[favourites]);
 
     const [selectedGenre,setSelectedGenre]= useState('');
     const [searchedFavourites, setSearchedFavourites] = useState(favourites);
     
     // search text
-    const handleSearch=(e)=>{
+    const handleSearch=useCallback((e)=>{
         const searchText = e.target.value;
         setFavouriteList(()=>{
             const filteredList = searchedFavourites?.filter((favourite)=> favourite.title.toLowerCase().includes(searchText.toLowerCase()));
             return filteredList;
         });
-    }
+    },[searchedFavourites]);
 
     // filter by genre
-    const filterByGenre=(genreId)=>{
+    const filterByGenre=useCallback((genreId)=>{
         setSearchedFavourites(()=>{
             const filteredList = favourites.filter((favourite)=> favourite.genre_ids[0] == genreId);
             setFavouriteList(filteredList);
             return filteredList;
         });
-    }
+    },[favourites]);
     // sorting
-    const handleAsc=()=>{
+    const handleAsc=useCallback(()=>{
         setFavouriteList(()=>{
             const filteredList = [...searchedFavourites].sort((a,b)=> a.popularity - b.popularity);
             return filteredList;
         });
-    }
+    },[searchedFavourites]);
 
-    const handleDesc=()=>{
+    const handleDesc=useCallback(()=>{
         setFavouriteList(()=>{
             const filteredList = [...searchedFavourites].sort((a,b)=> b.popularity - a.popularity);
             return filteredList;
         });
-    }
+    },[searchedFavourites]);
 
     return (
         <div className="favourites">
