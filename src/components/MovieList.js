@@ -2,7 +2,7 @@ import MovieCard from "./MovieCard";
 import {useEffect, useState} from "react";
 import { movies as movieData } from "../mockData/movieData";
 import Pagination from "./Pagination";
-const MovieList=({favourites,setFavourites})=>{
+const MovieList=()=>{
     const [movies,setMovies]= useState();
     const [moviePageStore,setMoviePageStore]=useState({});
     // we use this fetch in js generally
@@ -34,7 +34,7 @@ const MovieList=({favourites,setFavourites})=>{
         <div className="movie-list">
             {
                 movies?.results?.map((movie)=>{
-                    return (<MovieCard movie={movie} favourites={favourites} setFavourites={setFavourites}/>)
+                    return (<MovieCard movie={movie}/>)
                 }) 
             }
             {
