@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setActivePage } from "../store/productReducer";
 
 const getPageArray = (arrayLength, startNumber)=>{
     return [...Array(arrayLength)].map((item,idx)=>{
         return startNumber+idx+1;
     });
 }
-const Pagination = ({totalPages,fetchMovieData})=>{
+const Pagination = ({totalPages})=>{
     //total pages is a number, so create a array of size totalPageButtons from 1 to totalPageButtons
     //if we use totalPageButtons, we get cal stack exceeded, so for now take 10
     const totalPageButtons=Math.min(10,totalPages);
     const pageArray = getPageArray(totalPageButtons,0);
     const [pages,setPages]=useState(pageArray);
-    const [activePage,setActivePage]=useState(1);
-
+    //const [activePage,setActivePage]=useState(1);
+    const {activePage} = useSelector((state)=>state.products);
+    const dispatch = useDispatch();
     useEffect(()=>{
-        fetchMovieData(activePage);
+       // fetchMovieData(activePage);
         // clicking on next active page wil be greater than last val in array. so we need to update window
         if(activePage> pages[pages.length-1]){
             const startNumber = activePage-totalPageButtons;
@@ -25,18 +28,18 @@ const Pagination = ({totalPages,fetchMovieData})=>{
             const startNumber = activePage -1;
             setPages(getPageArray(totalPageButtons,startNumber));
         }
-    },[activePage]);
+    },[]);
 
     return(
         <div className="pagination">
-            <button onClick={()=> {setActivePage(activePage-1)}} disabled={activePage==1}>Prev</button>
+            <button onClick={()=> {dispatch(setActivePage(activePage-1))}} disabled={activePage==1}>Prev</button>
             {
                 pages?.map((pageNumber)=>{
                     return(<button className={activePage == pageNumber ? 'selected':''} disbaled={totalPages == activePage} 
-                    onClick={()=> {setActivePage(pageNumber)}}>{pageNumber}</button>)
+                    onClick={()=> {dispatch(setActivePage(pageNumber))}}>{pageNumber}</button>)
                 })
             }
-            <button onClick={()=> {setActivePage(activePage+1)}}>Next</button>
+            <button onClick={()=> {dispatch(setActivePage(activePage+1))}}>Next</button>
         </div>
     )
 }

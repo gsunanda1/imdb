@@ -1,47 +1,47 @@
 import MovieCard from "./MovieCard";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { movies as movieData } from "../mockData/movieData";
 import Pagination from "./Pagination";
-const MovieList=()=>{
-    const [movies,setMovies]= useState();
-    const [moviePageStore,setMoviePageStore]=useState({});
+import { useDispatch, useSelector } from "react-redux";
+import { setActivePage, setMoviePageStore } from "../store/productReducer";
+const MovieList = () => {
+    //const [movies,setMovies]= useState();
+    // const [activePage,setActivePage]= useState(1);
+    // const [moviePageStore,setMoviePageStore]=useState({});
+
+    const { activePage, moviePageStore } = useSelector((state) => state.products);
+    const dispatch = useDispatch();
     // we use this fetch in js generally
-    const fetchMovieData = (pageNumber = 1) => {
-        const pageWiseMovie = moviePageStore[pageNumber];
+    const fetchMovieData = () => {
+       // dispatch(setActivePage(activePage));
+        const pageWiseMovie = moviePageStore[activePage];
         if (!pageWiseMovie) {
-            fetch(`https://api.themoviedb.org/3/movie/popular?api_key=0b5415eb9bf023d556ef265b425e0e4a&language=en-US&page=${pageNumber}`)
+            fetch(`https://api.themoviedb.org/3/movie/popular?api_key=0fb3a14219996b3060f6bef1a34a1f38&language=en-US&page=${activePage}`)
                 .then(res => res.json())
                 .then(data => {
-                    setMovies(data);
+                    //setMovies(data);
+                    //dispatch(setActivePage(pageNumber));
                     //should not mutate state directly
                     //moviePageStore[pageNumber] = data
-                    setMoviePageStore((preValue)=>{
-                        return {
-                            ...preValue,
-                            [pageNumber]:data
-                        }
-                    });
-        }   );
-    }
-        else{
-            setMovies(pageWiseMovie);
+                    dispatch(setMoviePageStore(data));
+                });
         }
     }
-    useEffect(()=>{
+    useEffect(() => {
         fetchMovieData();
-    },[])
-    return(
+    }, [activePage])
+    return (
         <div className="movie-list">
             {
-                movies?.results?.map((movie)=>{
-                    return (<MovieCard movie={movie}/>)
-                }) 
+                moviePageStore?.[activePage]?.results?.map((movie) => {
+                    return (<MovieCard movie={movie} />)
+                })
             }
             {
-                movies?.total_pages && 
-                <Pagination totalPages={movies?.total_pages} fetchMovieData={fetchMovieData}/>
+                moviePageStore?.[activePage]?.total_pages &&
+                <Pagination totalPages={moviePageStore?.[activePage]?.total_pages} />
             }
-            
+
         </div>
     )
 }

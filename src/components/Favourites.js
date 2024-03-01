@@ -1,5 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { FavouriteContext } from "../context/favourite";
+import { useDispatch, useSelector } from "react-redux";
+import { setFavouriteList, setSearchedFavourites, setSelectedGenre } from "../store/favouriteReducer";
 
 let genreIds = {
     28: "Action",
@@ -23,52 +25,40 @@ let genreIds = {
     37: "Western",
 }
 const Favourites = () => {
-    const {favourites} = useContext(FavouriteContext);
+   // const {favourites} = useContext(FavouriteContext);
+   const {favourites,selectedGenre,favouriteList,searchedFavourites} = useSelector((state)=> state.favourites);
     //const [genres,setGenres]=useState([]);
-    const [favouriteList,setFavouriteList]= useState(favourites);
-    // useEffect(()=>{
-    //     const genreIds = Array.from(new Set(favourites.map((fav)=> fav.genre_ids[0])));
-    //     setGenres(genreIds);
-    // },[favourites]);
-
+   // const [selectedGenre,setSelectedGenre]= useState('');
+   // const [favouriteList,setFavouriteList]= useState(favourites);
+   //const [searchedFavourites, setSearchedFavourites] = useState(favourites);
+   
+   const dispatch = useDispatch();
    
     const genres = useMemo(()=>{
         return Array.from(new Set(favourites.map((fav)=> fav.genre_ids[0])))
     },[favourites]);
 
-    const [selectedGenre,setSelectedGenre]= useState('');
-    const [searchedFavourites, setSearchedFavourites] = useState(favourites);
+   
     
     // search text
     const handleSearch=useCallback((e)=>{
-        const searchText = e.target.value;
-        setFavouriteList(()=>{
-            const filteredList = searchedFavourites?.filter((favourite)=> favourite.title.toLowerCase().includes(searchText.toLowerCase()));
-            return filteredList;
-        });
+        dispatch(setFavouriteList({val:e.target.value,type:'search'}));
     },[searchedFavourites]);
 
-    // filter by genre
-    const filterByGenre=useCallback((genreId)=>{
-        setSearchedFavourites(()=>{
-            const filteredList = favourites.filter((favourite)=> favourite.genre_ids[0] == genreId);
-            setFavouriteList(filteredList);
-            return filteredList;
-        });
-    },[favourites]);
+
+    useEffect(()=>{
+        dispatch(setSearchedFavourites());
+        dispatch(setFavouriteList({type:'categorise'}));
+    },[selectedGenre])
+    
     // sorting
     const handleAsc=useCallback(()=>{
-        setFavouriteList(()=>{
-            const filteredList = [...searchedFavourites].sort((a,b)=> a.popularity - b.popularity);
-            return filteredList;
-        });
+        dispatch(setFavouriteList({type:'sortasc'}));
+        
     },[searchedFavourites]);
 
     const handleDesc=useCallback(()=>{
-        setFavouriteList(()=>{
-            const filteredList = [...searchedFavourites].sort((a,b)=> b.popularity - a.popularity);
-            return filteredList;
-        });
+        dispatch(setFavouriteList({type:'sortdesc'}));
     },[searchedFavourites]);
 
     return (
@@ -76,10 +66,10 @@ const Favourites = () => {
             <div className="left-section">
                 <div className="genres-wrapper">
                     <ul>
-                        <li className={selectedGenre == ''? 'selected':''} onClick={()=> {setSelectedGenre('');setFavouriteList(favourites)}}>All Genres</li>
+                        <li className={selectedGenre == ''? 'selected':''} onClick={()=> {dispatch(setSelectedGenre(''));dispatch(setFavouriteList(favourites))}}>All Genres</li>
                         {
                             genres?.map((genreId)=>{
-                                return(<li className={genreId == selectedGenre ? 'selected':''} onClick={()=> {setSelectedGenre(genreId);filterByGenre(genreId);}}>{genreIds[genreId]}</li>)
+                                return(<li className={genreId == selectedGenre ? 'selected':''} onClick={()=> {dispatch(setSelectedGenre(genreId));}}>{genreIds[genreId]}</li>)
                             })
                         }
                     </ul>
